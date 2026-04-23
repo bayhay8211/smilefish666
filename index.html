@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>我的主页 | Connect with Me</title>
+    <title>我的主页 | @smilefish674</title>
     <style>
         /* --- 核心审美：深色模式、呼吸感、电影感 --- */
         :root {
-            --bg-color: #030303; /* 兜底背景色 */
-            --card-bg: rgba(20, 20, 20, 0.5); /* 卡片更透一点，配合新背景 */
+            --bg-color: #030303; 
+            --card-bg: rgba(20, 20, 20, 0.5); 
             --card-border: rgba(255, 255, 255, 0.1);
             --text-main: #ffffff;
-            --text-sub: #cccccc; /* 副标题调亮一点，提高在复杂背景上的可读性 */
+            --text-sub: #cccccc; 
             --accent: #ffffff; 
             --easing: cubic-bezier(0.25, 1, 0.5, 1); 
         }
@@ -24,64 +24,60 @@
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             -webkit-font-smoothing: antialiased;
             display: flex;
-            justify-content: center; /* 内容居中 */
+            justify-content: center;
             min-height: 100vh;
-            padding: 60px 20px; /* 增加顶部padding，让内容下沉一点，不挡脸 */
+            padding: 60px 20px;
             position: relative;
-            overflow-x: hidden; /* 防止横向滚动 */
+            overflow-x: hidden; 
         }
 
-        /* --- 新增：动态背景容器 --- */
+        /* --- 动态背景容器 --- */
         .background-container {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -2;
             display: flex;
-            /* 关键修改：电脑端默认横向排列 */
             flex-direction: row; 
         }
 
         .bg-photo-item {
-            flex: 1; /* 三张图平分宽度 */
+            flex: 1; 
             position: relative;
             overflow: hidden;
-            height: 100%; /* 确保占满高度 */
+            height: 100%; 
         }
 
         .bg-photo-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            object-position: center top; /* 聚焦照片上方人物部分 */
-            filter: brightness(0.9) contrast(1.05); /* 微调，让照片更通透一点 */
+            object-position: center top; 
+            filter: brightness(0.9) contrast(1.05); 
         }
 
         /* --- 手机端适配：只显示中间照片 --- */
         @media (max-width: 768px) {
             .background-container {
-                /* 手机端改为纵向，但因为隐藏了上下两张，实际上只显示一个 */
                 flex-direction: column;
             }
             .desktop-only {
-                display: none; /* 隐藏左侧和右侧的照片 */
+                display: none; 
             }
             .bg-photo-item.mobile-main {
-                width: 100%; /* 占满全屏宽度 */
-                height: 100vh; /* 占满全屏高度 */
+                width: 100%; 
+                height: 100vh; 
                 flex: none; 
             }
         }
 
-        /* --- 更新：自上而下的情绪渐变遮罩（拉低渐变点） --- */
+        /* --- 自上而下的情绪渐变遮罩 --- */
         body::after {
             content: '';
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            /* 关键修改：大幅拉低渐变点，让人物主体更清晰 */
-            /* 0% 到 60% 是非常透明的，让人物清晰显露；之后才开始快速变黑 */
             background: linear-gradient(180deg, rgba(3,3,3,0.05) 0%, rgba(3,3,3,0.2) 60%, rgba(3,3,3,0.9) 85%, rgba(3,3,3,1) 100%);
             z-index: -1;
-            pointer-events: none; /* 确保遮罩不挡鼠标点击 */
+            pointer-events: none; 
         }
 
         .main-container {
@@ -92,7 +88,7 @@
             align-items: center;
             opacity: 0; 
             animation: fadeInPage 1.2s var(--easing) forwards;
-            z-index: 10; /* 确保内容在背景之上 */
+            z-index: 10; 
         }
 
         /* --- 头像与简介区域 --- */
@@ -114,7 +110,6 @@
             height: 100%;
             border-radius: 50%;
             object-fit: cover;
-            /* 关键修改：聚焦新头像的正脸，稍微偏右上一点的位置 */
             object-position: center 30%; 
             border: 2px solid rgba(255,255,255,0.15); 
             box-shadow: 0 12px 35px rgba(0,0,0,0.9); 
@@ -122,7 +117,6 @@
             z-index: 2;
         }
 
-        /* 头像呼吸光晕加强 */
         .avatar-wrapper::after {
             content: '';
             position: absolute;
@@ -139,7 +133,7 @@
             font-weight: 700;
             letter-spacing: 0.5px;
             margin-bottom: 12px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5); /* 增加文字阴影，防止背景太花看不清 */
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5); 
         }
 
         .profile-bio {
@@ -151,7 +145,7 @@
             text-shadow: 0 1px 5px rgba(0,0,0,0.8);
         }
 
-        /* --- 链接卡片区域（毛玻璃增强） --- */
+        /* --- 链接卡片区域 --- */
         .links-section {
             width: 100%;
             display: flex;
@@ -162,7 +156,6 @@
         .link-card {
             width: 100%;
             background: var(--card-bg);
-            /* 增强毛玻璃效果以适应复杂背景 */
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border: 1px solid var(--card-border); 
@@ -178,7 +171,6 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        /* 悬停反色效果 */
         .link-card:hover {
             background-color: var(--accent);
             transform: translateY(-3px) scale(1.02);
@@ -254,7 +246,6 @@
             font-size: 0.75rem;
             color: rgba(255,255,255,0.6);
             letter-spacing: 1px;
-            text-transform: uppercase;
             text-shadow: 0 1px 3px rgba(0,0,0,1);
         }
 
@@ -273,17 +264,14 @@
 </head>
 <body>
 
-    <!-- 背景照片容器：电脑端横向排列，手机端只显示中间 -->
+    <!-- 背景照片容器 -->
     <div class="background-container">
-        <!-- [电脑端-左侧] 粉色衣服对镜照片 -->
         <div class="bg-photo-item desktop-only">
             <img src="9bfc19f2ff044e717d52deb4476b0d54.jpg" alt="Background Left">
         </div>
-        <!-- [电脑端-中间 / 手机端-唯一] 黄色特写照片 -->
         <div class="bg-photo-item mobile-main">
             <img src="01f337266f782f282c38bdc2f7f39500.jpg" alt="Background Main">
         </div>
-        <!-- [电脑端-右侧] 蓝色对镜照片 -->
         <div class="bg-photo-item desktop-only">
             <img src="05537127ec66545ed12c5e2d9e70fde4.jpg" alt="Background Right">
         </div>
@@ -294,17 +282,16 @@
         <!-- 1. 个人资料区 -->
         <header class="profile-section">
             <div class="avatar-wrapper">
-                <!-- 头像：更换为泳池照片，CSS已设置聚焦正脸 -->
                 <img src="989215dfeeb8e53b6de6c57fd66af503.jpg" alt="Profile" class="avatar-img">
             </div>
             <h1 class="profile-name">@smilefish674</h1>
-            <p class="profile-bio">Verified Creator ✧ Aesthetic Curator<br>Explore my private space.</p>
+            <p class="profile-bio">独立创作者 ✧ 记录美好<br>欢迎来到我的私密空间</p>
         </header>
 
         <!-- 2. 社交链接区 -->
         <section class="links-section">
 
-            <!-- Telegram (排第一) -->
+            <!-- 1. Telegram -->
             <a href="https://t.me/smilefish78" class="link-card" target="_blank">
                 <div class="link-info">
                     <div class="icon-box">
@@ -314,14 +301,14 @@
                         </svg>
                     </div>
                     <div class="link-text">
-                        <span class="link-title">Telegram Group</span>
-                        <span class="link-subtitle">Exclusive Content & Chat</span>
+                        <span class="link-title">TG 私聊</span>
+                        <span class="link-subtitle">独家内容</span>
                     </div>
                 </div>
                 <div class="arrow-icon">➔</div>
             </a>
 
-            <!-- Douyin / TikTok (排第二) -->
+            <!-- 2. Douyin -->
             <a href="https://www.douyin.com/user/MS4wLjABAAAAia0K41GanMqpr4gbBL7AFTbJVpiKXDVQjyix6j9D8efWV32oSuQsRF6Fm6Fi00fV?from_tab_name=main" class="link-card" target="_blank">
                 <div class="link-info">
                     <div class="icon-box">
@@ -332,8 +319,42 @@
                         </svg>
                     </div>
                     <div class="link-text">
-                        <span class="link-title">Douyin / TikTok</span>
-                        <span class="link-subtitle">Short Videos</span>
+                        <span class="link-title">抖音</span>
+                        <span class="link-subtitle">日常视频</span>
+                    </div>
+                </div>
+                <div class="arrow-icon">➔</div>
+            </a>
+
+            <!-- 3. Weibo -->
+            <a href="https://weibo.com/u/7518859620" class="link-card" target="_blank">
+                <div class="link-info">
+                    <div class="icon-box">
+                        <svg class="stroke-only" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                        </svg>
+                    </div>
+                    <div class="link-text">
+                        <span class="link-title">微博</span>
+                        <span class="link-title" style="font-size: 0.85rem; color: var(--text-sub); font-weight: 400;">图文动态与最新日常碎碎念</span>
+                    </div>
+                </div>
+                <div class="arrow-icon">➔</div>
+            </a>
+
+            <!-- 4. 购买 Telegram -->
+            <a href="https://jiangjun.one" class="link-card" target="_blank">
+                <div class="link-info">
+                    <div class="icon-box">
+                        <svg class="stroke-only" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <path d="M16 10a4 4 0 0 1-8 0"></path>
+                        </svg>
+                    </div>
+                    <div class="link-text">
+                        <span class="link-title">电报号购买</span>
+                        <span class="link-subtitle"></span>
                     </div>
                 </div>
                 <div class="arrow-icon">➔</div>
@@ -343,7 +364,7 @@
 
         <!-- 4. 页脚 -->
         <footer class="footer">
-            © 2026 @smilefish674. 18+ ONLY.
+            © 2026 @smilefish674. 仅限18岁以上访问。
         </footer>
 
     </div>
