@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>我的主页 | Connect with Me</title>
+    <style>
+        /* --- 核心审美：深色模式、呼吸感、电影感 --- */
+        :root {
+            --bg-color: #030303; /* 兜底背景色 */
+            --card-bg: rgba(20, 20, 20, 0.5); /* 卡片更透一点，配合新背景 */
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-sub: #cccccc; /* 副标题调亮一点，提高在复杂背景上的可读性 */
+            --accent: #ffffff; 
+            --easing: cubic-bezier(0.25, 1, 0.5, 1); 
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            justify-content: center; /* 内容居中 */
+            min-height: 100vh;
+            padding: 60px 20px; /* 增加顶部padding，让内容下沉一点，不挡脸 */
+            position: relative;
+            overflow-x: hidden; /* 防止横向滚动 */
+        }
+
+        /* --- 新增：动态背景容器 --- */
+        .background-container {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -2;
+            display: flex;
+            /* 关键修改：电脑端默认横向排列 */
+            flex-direction: row; 
+        }
+
+        .bg-photo-item {
+            flex: 1; /* 三张图平分宽度 */
+            position: relative;
+            overflow: hidden;
+            height: 100%; /* 确保占满高度 */
+        }
+
+        .bg-photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top; /* 聚焦照片上方人物部分 */
+            filter: brightness(0.9) contrast(1.05); /* 微调，让照片更通透一点 */
+        }
+
+        /* --- 手机端适配：只显示中间照片 --- */
+        @media (max-width: 768px) {
+            .background-container {
+                /* 手机端改为纵向，但因为隐藏了上下两张，实际上只显示一个 */
+                flex-direction: column;
+            }
+            .desktop-only {
+                display: none; /* 隐藏左侧和右侧的照片 */
+            }
+            .bg-photo-item.mobile-main {
+                width: 100%; /* 占满全屏宽度 */
+                height: 100vh; /* 占满全屏高度 */
+                flex: none; 
+            }
+        }
+
+        /* --- 更新：自上而下的情绪渐变遮罩（拉低渐变点） --- */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            /* 关键修改：大幅拉低渐变点，让人物主体更清晰 */
+            /* 0% 到 60% 是非常透明的，让人物清晰显露；之后才开始快速变黑 */
+            background: linear-gradient(180deg, rgba(3,3,3,0.05) 0%, rgba(3,3,3,0.2) 60%, rgba(3,3,3,0.9) 85%, rgba(3,3,3,1) 100%);
+            z-index: -1;
+            pointer-events: none; /* 确保遮罩不挡鼠标点击 */
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 440px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0; 
+            animation: fadeInPage 1.2s var(--easing) forwards;
+            z-index: 10; /* 确保内容在背景之上 */
+        }
+
+        /* --- 头像与简介区域 --- */
+        .profile-section {
+            text-align: center;
+            margin-bottom: 45px;
+            width: 100%;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 115px;
+            height: 115px;
+            margin: 0 auto 24px;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            /* 关键修改：聚焦新头像的正脸，稍微偏右上一点的位置 */
+            object-position: center 30%; 
+            border: 2px solid rgba(255,255,255,0.15); 
+            box-shadow: 0 12px 35px rgba(0,0,0,0.9); 
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 头像呼吸光晕加强 */
+        .avatar-wrapper::after {
+            content: '';
+            position: absolute;
+            top: -3px; left: -3px; right: -3px; bottom: -3px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.4), rgba(255,255,255,0.1));
+            z-index: 1;
+            animation: rotateGlow 5s linear infinite;
+            opacity: 0.7;
+        }
+
+        .profile-name {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5); /* 增加文字阴影，防止背景太花看不清 */
+        }
+
+        .profile-bio {
+            font-size: 0.95rem;
+            color: var(--text-sub);
+            font-weight: 400;
+            line-height: 1.6;
+            padding: 0 15px;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.8);
+        }
+
+        /* --- 链接卡片区域（毛玻璃增强） --- */
+        .links-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .link-card {
+            width: 100%;
+            background: var(--card-bg);
+            /* 增强毛玻璃效果以适应复杂背景 */
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--card-border); 
+            padding: 20px 24px;
+            border-radius: 18px;
+            text-decoration: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.4s var(--easing);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        /* 悬停反色效果 */
+        .link-card:hover {
+            background-color: var(--accent);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            border-color: transparent;
+        }
+
+        .link-info {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            z-index: 2;
+        }
+
+        .icon-box {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+            transition: color 0.4s var(--easing);
+        }
+
+        .link-card:hover .icon-box svg {
+            stroke: #000;
+            fill: #000;
+        }
+        
+        .link-card:hover .stroke-only { fill: none !important; }
+
+        .link-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .link-title {
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: color 0.4s var(--easing);
+        }
+
+        .link-subtitle {
+            color: var(--text-sub);
+            font-size: 0.85rem;
+            font-weight: 400;
+            transition: color 0.4s var(--easing);
+        }
+
+        .link-card:hover .link-title,
+        .link-card:hover .link-subtitle {
+            color: #000000;
+        }
+
+        .arrow-icon {
+            color: var(--text-sub);
+            font-size: 1.2rem;
+            transition: transform 0.4s var(--easing), color 0.4s var(--easing);
+            z-index: 2;
+        }
+
+        .link-card:hover .arrow-icon {
+            transform: translateX(5px) rotate(-45deg);
+            color: #000;
+        }
+
+        /* --- 页脚 --- */
+        .footer {
+            margin-top: 60px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.6);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-shadow: 0 1px 3px rgba(0,0,0,1);
+        }
+
+        /* --- 动画 --- */
+        @keyframes fadeInPage {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes rotateGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 背景照片容器：电脑端横向排列，手机端只显示中间 -->
+    <div class="background-container">
+        <!-- [电脑端-左侧] 粉色衣服对镜照片 -->
+        <div class="bg-photo-item desktop-only">
+            <img src="9bfc19f2ff044e717d52deb4476b0d54.jpg" alt="Background Left">
+        </div>
+        <!-- [电脑端-中间 / 手机端-唯一] 黄色特写照片 -->
+        <div class="bg-photo-item mobile-main">
+            <img src="01f337266f782f282c38bdc2f7f39500.jpg" alt="Background Main">
+        </div>
+        <!-- [电脑端-右侧] 蓝色对镜照片 -->
+        <div class="bg-photo-item desktop-only">
+            <img src="05537127ec66545ed12c5e2d9e70fde4.jpg" alt="Background Right">
+        </div>
+    </div>
+
+    <div class="main-container">
+
+        <!-- 1. 个人资料区 -->
+        <header class="profile-section">
+            <div class="avatar-wrapper">
+                <!-- 头像：更换为泳池照片，CSS已设置聚焦正脸 -->
+                <img src="989215dfeeb8e53b6de6c57fd66af503.jpg" alt="Profile" class="avatar-img">
+            </div>
+            <h1 class="profile-name">@smilefish674</h1>
+            <p class="profile-bio">Verified Creator ✧ Aesthetic Curator<br>Explore my private space.</p>
+        </header>
+
+        <!-- 2. 社交链接区 -->
+        <section class="links-section">
+
+            <!-- Telegram (排第一) -->
+            <a href="https://t.me/smilefish78" class="link-card" target="_blank">
+                <div class="link-info">
+                    <div class="icon-box">
+                        <svg class="stroke-only" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </div>
+                    <div class="link-text">
+                        <span class="link-title">Telegram Group</span>
+                        <span class="link-subtitle">Exclusive Content & Chat</span>
+                    </div>
+                </div>
+                <div class="arrow-icon">➔</div>
+            </a>
+
+            <!-- Douyin / TikTok (排第二) -->
+            <a href="https://www.douyin.com/user/MS4wLjABAAAAia0K41GanMqpr4gbBL7AFTbJVpiKXDVQjyix6j9D8efWV32oSuQsRF6Fm6Fi00fV?from_tab_name=main" class="link-card" target="_blank">
+                <div class="link-info">
+                    <div class="icon-box">
+                        <svg class="stroke-only" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 18V5l12-2v13"></path>
+                            <circle cx="6" cy="18" r="3"></circle>
+                            <circle cx="18" cy="16" r="3"></circle>
+                        </svg>
+                    </div>
+                    <div class="link-text">
+                        <span class="link-title">Douyin / TikTok</span>
+                        <span class="link-subtitle">Short Videos</span>
+                    </div>
+                </div>
+                <div class="arrow-icon">➔</div>
+            </a>
+
+        </section>
+
+        <!-- 4. 页脚 -->
+        <footer class="footer">
+            © 2026 @smilefish674. 18+ ONLY.
+        </footer>
+
+    </div>
+
+</body>
+</html>
